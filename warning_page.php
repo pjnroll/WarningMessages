@@ -35,7 +35,7 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
-<body>    
+<body>
     <div class="container">
         <div class="row mt-5">
             <div class="col-md-2 offset-md-3">
@@ -70,36 +70,39 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
         </div>
         <div class="row mt-4">
             <div class="col-md-7 offset-md-2">
-            
+
 			<!-- tag to pass the number of indicators as a parameter -->
             <div id="indicator_nums" style="display: none;">
             	<?php
 					$indicator_nums = count($indicators);
-                    echo htmlspecialchars($indicator_nums); 
+                    echo htmlspecialchars($indicator_nums);
             	?>
 	        </div>
-            
-            
+
+
                 <ul id="indicators-list">
 				<?php
 					if ($mtd == "random") {
-                    	$_SESSION["index"] = -1;
-						for ($i = 0; $i < count($indicators); $i++) {
+						$_SESSION["index"] = -1;
+
+						$num = count($indicators);
+						for ($i = 0; $i < $num; $i++) {
+							$rand = rand(0, count($indicators)-1);
 							echo "<li>";
 							echo "    <span>";
 							echo "        <img src=\"baseline_highlight_off_white_18dp.png\" alt=\"\">";
 							echo "    </span>";
 							echo "    <span class=\"white underline my-auto\">";
-							echo $indicators[$i];
+							echo $indicators[$rand];
 							echo "    </span>";
-							
+
 							// I get the value of the associated indicator (if present)
-							$variable = $indicators[$i]."_param";
+							$variable = $indicators[$rand]."_param";
 							$variable = str_replace(" ", "_", $variable);
 							$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
-							
+
 							// I get the number of messages of a specific indicator
-							$tbl_to_query = str_replace(" ", "_", $indicators[$i]);
+							$tbl_to_query = str_replace(" ", "_", $indicators[$rand]);
 							$query_string = "select count(*) from `" . $tbl_to_query . "`";
 							$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
 							if (mysql_num_rows($query_num_msgs) > 0) {
@@ -107,10 +110,10 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 									$num_msgs = $row_num_msgs[0];
 								}
 							}
-							
+
 							// I choose a random message
 							$msg_id = rand(1,$num_msgs);
-							
+
 							// I retrieve a message
 							$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
 							$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
@@ -119,13 +122,15 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 									$msg = $row_msg[0];
 								}
 							}
-							
+
 							echo "    <p id=\"test\" class=\"white indicator-description\">";
 							// Replace XXX in the message with the parameters from the configuration page
 							$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
 							echo $msg;
 							echo "    </p>";
 							echo "</li>";
+							unset($indicators[$rand]);
+							sort($indicators);
 						}
 					} else if ($mtd == "latin square") {
 						$index_ls = $_SESSION["index"];
@@ -137,12 +142,12 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 							echo "    <span class=\"white underline my-auto\">";
 							echo $indicators[$i];
 							echo "    </span>";
-							
+
 							// I get the value of the associated indicator (if present)
 							$variable = $indicators[$i]."_param";
 							$variable = str_replace(" ", "_", $variable);
 							$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
-							
+
 							// I get the number of messages of a specific indicator
 							$tbl_to_query = str_replace(" ", "_", $indicators[$i]);
 							$query_string = "select count(*) from `" . $tbl_to_query . "`";
@@ -152,33 +157,33 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 									$num_msgs = $row_num_msgs[0];
 								}
 							}
-							
+
 							/*// I choose a random message
 							$msg_id = rand(1,$num_msgs);*/
-							
+
 							$msg_id = ($index_ls % $num_msgs)+1;
 							//echo "ls_index: " . $index_ls . "<br>";
 							//echo "num msg tab: " . $num_msgs . "<br>";
 							//echo "message n. " . $msg_id;
-							
+
 							// I retrieve a message
 							$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
 							//echo "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-							
+
 							$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
 							if (mysql_num_rows($query_msg) > 0) {
 								while ($row_msg = mysql_fetch_row($query_msg)) {
 									$msg = $row_msg[0];
 								}
 							}
-							
+
 							echo "    <p id=\"test\" class=\"white indicator-description\">";
 							// Replace XXX in the message with the parameters from the configuration page
 							$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
 							echo $msg;
 							echo "    </p>";
 							echo "</li>";
-							
+
 							// I increment the index
 							$index_ls++;
 						}
@@ -246,7 +251,7 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
     #proceed-message {
         display: none;
     }
-	
+
 	.btn1 {border-radius: 4px;}
 </style>
 
@@ -260,7 +265,7 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
         while (target && target.parentNode !== ul) {
             target = target.parentNode; // If the clicked element isn't a direct child
             if (!target) {
-                return; // If element doesn't exist 
+                return; // If element doesn't exist
             }
         }
         if (target.tagName === 'LI') {
@@ -311,10 +316,10 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
     function handleProceedingMessages() {
         // Hide/Shows the proceed link if the paragraphs are expanded
         //If proceed message is displayed, hide proceeding info
-        
+
     	var div = document.getElementById("indicator_nums");
     	var nums = div.textContent;
-        
+
         let proceedMessage = document.getElementById('proceed-message');
         if (counterExpandedParagraphs == nums) {
             proceedMessage.style.display = 'block';
