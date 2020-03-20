@@ -33,27 +33,180 @@ session_start();
 	<div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 55%;  padding: 10px;">
 		<form id="warn_form" method="get" action="warning_page.php">
 			<h4 style="text-align: center;">Select the indicators and messages you want to show</h4>
-<!-- inserire qui la tabella -->
-<div class="accordion">Indicator 1</div>
-<div class="panel">
-	<table>
-		<tr>
-			<td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</td>
-			<td><input type="checkbox" />
-		</tr>
-	</table>
-</div>
+	<!-- inserire qui la tabella -->
+			<?php
+			echo "<div class=\"accordion\">Alexa Ranking</div>";
+			$query_string = "select message from Alexa_Ranking";
+			$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+			if (mysql_num_rows($query_msg) > 0) {
+				echo "<div class=\"panel\">";
+				echo "<table cellpadding=\"5\" cellspacing=\"5\">";
 
-<div class="accordion">Section 2</div>
-<div class="panel">
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-</div>
+				while ($row_msg = mysql_fetch_row($query_msg)) {
+					$msg = $row_msg[0];
+					echo "<tr>";
+					echo "<td>".$msg."</td>";
+					echo "<td><input type=\"checkbox\" />";
+					echo "</tr>";
+				}
+				echo "</table>";
+				echo "</div>";
+			}
 
-<div class="accordion">Section 3</div>
-<div class="panel">
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-</div>
+			/*
+			 *
+			 */
 
+			echo "<div class=\"accordion\">Archived Domain</div>";
+			$query_string = "select message from Archived_Domain";
+			$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+			if (mysql_num_rows($query_msg) > 0) {
+				echo "<div class=\"panel\">";
+				echo "<table cellspacing=\"5\" cellpadding=\"5\">";
+
+				while ($row_msg = mysql_fetch_row($query_msg)) {
+					$msg = $row_msg[0];
+					echo "<tr>";
+					echo "<td>".$msg."</td>";
+					echo "<td><input type=\"checkbox\" />";
+					echo "</tr>";
+				}
+				echo "</table>";
+				echo "</div>";
+			}
+
+			/*
+			 *
+			 */
+
+			 echo "<div class=\"accordion\">Name Length</div>";
+			 $query_string = "select message from Name_Length";
+			 $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+			 if (mysql_num_rows($query_msg) > 0) {
+				 echo "<div class=\"panel\">";
+				 echo "<table cellpadding=\"5\" cellspacing=\"5\">";
+
+				 while ($row_msg = mysql_fetch_row($query_msg)) {
+					 $msg = $row_msg[0];
+					 echo "<tr>";
+					 echo "<td>".$msg."</td>";
+					 echo "<td><input type=\"checkbox\" />";
+					 echo "</tr>";
+				 }
+				 echo "</table>";
+				 echo "</div>";
+			 }
+
+			 /*
+				*
+				*/
+
+			 echo "<div class=\"accordion\">Self-Signed_HTTPs_cetrificate</div>";
+			 $query_string = "select message from `Self-Signed_HTTPs_cetrificate`";
+			 $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+			 if (mysql_num_rows($query_msg) > 0) {
+				 echo "<div class=\"panel\">";
+				 echo "<table cellspacing=\"5\" cellpadding=\"5\">";
+
+				 while ($row_msg = mysql_fetch_row($query_msg)) {
+					 $msg = $row_msg[0];
+					 echo "<tr>";
+					 echo "<td>".$msg."</td>";
+					 echo "<td><input type=\"checkbox\" />";
+					 echo "</tr>";
+				 }
+				 echo "</table>";
+				 echo "</div>";
+			 }
+
+			 /*
+				*
+				*/
+
+				echo "<div class=\"accordion\">Server Location</div>";
+				$query_string = "select message from Server_Location";
+				$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+				if (mysql_num_rows($query_msg) > 0) {
+					echo "<div class=\"panel\">";
+					echo "<table cellpadding=\"5\" cellspacing=\"5\">";
+
+					while ($row_msg = mysql_fetch_row($query_msg)) {
+						$msg = $row_msg[0];
+						echo "<tr>";
+						echo "<td>".$msg."</td>";
+						echo "<td><input type=\"checkbox\" />";
+						echo "</tr>";
+					}
+					echo "</table>";
+					echo "</div>";
+				}
+
+				/*
+				 *
+				 */
+
+				echo "<div class=\"accordion\">Time Life (Age)</div>";
+				$query_string = "select message from `Time_Life_(Age)`";
+				$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+				if (mysql_num_rows($query_msg) > 0) {
+					echo "<div class=\"panel\">";
+					echo "<table cellspacing=\"5\" cellpadding=\"5\">";
+
+					while ($row_msg = mysql_fetch_row($query_msg)) {
+						$msg = $row_msg[0];
+						echo "<tr>";
+						echo "<td>".$msg."</td>";
+						echo "<td><input type=\"checkbox\" />";
+						echo "</tr>";
+					}
+					echo "</table>";
+					echo "</div>";
+				}
+
+				/*
+				 *
+				 */
+
+				 echo "<div class=\"accordion\">Top-level Domain</div>";
+				 $query_string = "select message from `Top-level_Domain`";
+				 $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+				 if (mysql_num_rows($query_msg) > 0) {
+					 echo "<div class=\"panel\">";
+					 echo "<table cellpadding=\"5\" cellspacing=\"5\">";
+
+					 while ($row_msg = mysql_fetch_row($query_msg)) {
+						 $msg = $row_msg[0];
+						 echo "<tr>";
+						 echo "<td>".$msg."</td>";
+						 echo "<td><input type=\"checkbox\" />";
+						 echo "</tr>";
+					 }
+					 echo "</table>";
+					 echo "</div>";
+				 }
+
+				 /*
+					*
+					*/
+
+				 echo "<div class=\"accordion\">URL Mimicking</div>";
+				 $query_string = "select message from `URL_Mimicking`";
+				 $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+				 if (mysql_num_rows($query_msg) > 0) {
+					 echo "<div class=\"panel\">";
+					 echo "<table cellspacing=\"5\" cellpadding=\"5\">";
+
+					 while ($row_msg = mysql_fetch_row($query_msg)) {
+						 $msg = $row_msg[0];
+						 echo "<tr>";
+						 echo "<td>".$msg."</td>";
+						 echo "<td><input type=\"checkbox\" />";
+						 echo "</tr>";
+					 }
+					 echo "</table>";
+					 echo "</div>";
+				 }
+			?>
 
 		</form>
 		<button class="mdl-button mdl-js-button mdl-button--raised" onClick="checkForm();">Continue</button>
