@@ -13,28 +13,26 @@ session_start();
 	  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
 	  crossorigin="anonymous"></script>
 
-    <!-- Material Design Lite -->
-    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <!-- Material Design icon font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!-- Material Design Lite -->
+  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <!-- Material Design icon font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-  	<script src="setup.js"></script>
+	<script src="setup.js"></script>
+	<script src="check.js"></script>
 
-
-		<style media="screen">
-			.content {
-				padding: 0 18px;
-				display: none;
-				overflow: hidden;
-				background-color: #f1f1f1;
-			}
-		</style>
-	<title></title>
+	<style media="screen">
+		.content {
+			padding: 0 18px;
+			display: none;
+			overflow: hidden;
+			background-color: #f1f1f1;
+		}
+	</style>
+	<title>Warning Messages</title>
 </head>
 <body id="body">
-
-
 	<div class = "mdl-layout mdl-js-layout mdl-layout--fixed-header">
 		 <header class = "mdl-layout__header">
 				<div class = "mdl-layout__header-row">
@@ -46,7 +44,7 @@ session_start();
 				<div class = "mdl-tabs mdl-js-tabs">
 					 <div class = "mdl-tabs__tab-bar">
 							<a href = "#tab1-panel" class = "mdl-tabs__tab is-active">Dynamic</a>
-							<a href = "#tab2-panel" class = "mdl-tabs__tab">MAnual</a>
+							<a href = "#tab2-panel" class = "mdl-tabs__tab">Manual</a>
 					 </div>
 
 					 <div class = "mdl-tabs__panel is-active" id = "tab1-panel">
@@ -166,7 +164,7 @@ session_start();
 
 								 <h4 style="text-align: center;">Select how to show the messages for each indicator</h4>
 
-								 <select id="method" class="mdl-textfield__input">
+								 <select id="method" name="method" class="mdl-textfield__input">
 									 <option value="random" selected="selected">random</option>
 									 <option value="latin square">latin square</option>
 								 </select>
@@ -186,61 +184,109 @@ session_start();
 		 							<h4 style="text-align: center;">Select the indicators (and messages) you want to show</h4>
 									<?php
 
-									echo 									'<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
-									echo											'<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator">';
-									echo												'<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator" value="Indicator"/>';
-									echo											'</label>';
-									echo                      '<h5 class="mdl-cell mdl-cell--10-col">Alexa Ranking</h5>';
-									echo                      '<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
-									echo                        '<i class="material-icons">keyboard_arrow_down</i>';
-									echo                      '</button>';
+									echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
+									echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator1">';
+									echo '		<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator1" value="Indicator1"/>';
+									echo '	</label>';
+									echo '	<h5 class="mdl-cell mdl-cell--10-col">Alexa Ranking</h5>';
+									echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
+									echo '		<i class="material-icons">keyboard_arrow_down</i>';
+									echo '	</button>';
 									$query_string = "select message from Alexa_Ranking";
 									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
 									if (mysql_num_rows($query_msg) > 0) {
 										echo '<div class="content">';
-										echo '<form class="" action="" method="">';
-										echo '<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
-										echo '<tbody>';
-
+										echo '	<form name="" action="" method="">';
+										echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
+										echo '		<tbody>';
+										$i = 0;
 										while ($row_msg = mysql_fetch_row($query_msg)) {
 											$msg = $row_msg[0];
-
-
-											echo '<tr>';
-										  echo '<td>';
-											echo '<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-1">';
-											echo '<input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" >';
-											echo '</label>';
-											echo '</td>';
-										 echo "<td>".$msg."</td></tr>";
-
-
+											echo '	<tr>';
+										  echo '		<td>';
+											echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="indicator1-'.$i.'">';
+											echo '				<input type="radio" id="indicator1-'.$i.'" class="mdl-radio__button" name="options" value="'.$i.'" >';
+											echo '			</label>';
+											echo '		</td>';
+											echo "		<td>".$msg."</td></tr>";
+											$i++;
 										}
-										echo '</tbody></table></form></div></div>';
+										echo '		</tbody></table></form></div></div>';
 									}
 
+
+									echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
+									echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator2">';
+									echo '		<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator2" value="Indicator2"/>';
+									echo '	</label>';
+									echo '	<h5 class="mdl-cell mdl-cell--10-col">Archived Domain</h5>';
+									echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
+									echo '		<i class="material-icons">keyboard_arrow_down</i>';
+									echo '	</button>';
+									$query_string = "select message from Archived_Domain";
+									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									if (mysql_num_rows($query_msg) > 0) {
+										echo '<div class="content">';
+										echo '	<form name="" action="" method="">';
+										echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
+										echo '		<tbody>';
+										$i = 0;
+										while ($row_msg = mysql_fetch_row($query_msg)) {
+											$msg = $row_msg[0];
+											echo '	<tr>';
+										  echo '		<td>';
+											echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="indicator2-'.$i.'">';
+											echo '				<input type="radio" id="indicator2-'.$i.'" class="mdl-radio__button" name="options" value="'.$i.'" >';
+											echo '			</label>';
+											echo '		</td>';
+											echo "		<td>".$msg."</td></tr>";
+											$i++;
+										}
+										echo '		</tbody></table></form></div></div>';
+									}
+
+
+									echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
+									echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator3">';
+									echo '		<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator3" value="Indicator3"/>';
+									echo '	</label>';
+									echo '	<h5 class="mdl-cell mdl-cell--10-col">Name Length</h5>';
+									echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
+									echo '		<i class="material-icons">keyboard_arrow_down</i>';
+									echo '	</button>';
+									$query_string = "select message from Name_Length";
+									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									if (mysql_num_rows($query_msg) > 0) {
+										echo '<div class="content">';
+										echo '	<form name="" action="" method="">';
+										echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
+										echo '		<tbody>';
+										$i = 0;
+										while ($row_msg = mysql_fetch_row($query_msg)) {
+											$msg = $row_msg[0];
+											echo '	<tr>';
+										  echo '		<td>';
+											echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="indicator3-'.$i.'">';
+											echo '				<input type="radio" id="indicator3-'.$i.'" class="mdl-radio__button" name="options" value="'.$i.'" >';
+											echo '			</label>';
+											echo '		</td>';
+											echo "		<td>".$msg."</td></tr>";
+											$i++;
+										}
+										echo '		</tbody></table></form></div></div>';
+									}
 									?>
-
-
-
-
-
-
 		 						</form>
 
-		 						<button class="mdl-button mdl-js-button mdl-button--raised" onclick="readForm()" class="collapsible">
+		 						<button class="mdl-button mdl-js-button mdl-button--raised" onclick="checkForm()" class="collapsible">
 		 							Continue
 		 						</button>
 								<br>
+							</div>
 					 </div>
-
-
 				</div>
 		 </main>
 	</div>
-
-
-
 
 	<script type="text/javascript">
 			var coll = document.getElementsByClassName("collapsible");
