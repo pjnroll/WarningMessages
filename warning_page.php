@@ -69,127 +69,130 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
             </div>
         </div>
         <div class="row mt-4">
-            <div class="col-md-7 offset-md-2">
+          <div class="col-md-7 offset-md-2">
 
 			<!-- tag to pass the number of indicators as a parameter -->
-            <div id="indicator_nums" style="display: none;">
-            	<?php
-					$indicator_nums = count($indicators);
-                    echo htmlspecialchars($indicator_nums);
+          	<div id="indicator_nums" style="display: none;">
+            	<?
+							$indicator_nums = count($indicators);
+              echo htmlspecialchars($indicator_nums);
             	?>
-	        </div>
+	        	</div>
+						<ul id="indicators-list">
+						<?php
+							if ($mtd == "random") {
+								$_SESSION["index"] = -1;
 
+								$num = count($indicators);
+								for ($i = 0; $i < $num; $i++) {
+									$rand = rand(0, count($indicators)-1);
+									echo "<li>";
+									echo "    <span>";
+									echo "        <img src=\"ico_indicator.png\" alt=\"\">";
+									echo "    </span>";
+									echo "    <span class=\"white underline my-auto\">";
+									echo $indicators[$rand];
+									echo "    </span>";
 
-                <ul id="indicators-list">
-				<?php
-					if ($mtd == "random") {
-						$_SESSION["index"] = -1;
+									// I get the value of the associated indicator (if present)
+									$variable = $indicators[$rand]."_param";
+									$variable = str_replace(" ", "_", $variable);
+									$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
 
-						$num = count($indicators);
-						for ($i = 0; $i < $num; $i++) {
-							$rand = rand(0, count($indicators)-1);
-							echo "<li>";
-							echo "    <span>";
-							echo "        <img src=\"baseline_highlight_off_white_18dp.png\" alt=\"\">";
-							echo "    </span>";
-							echo "    <span class=\"white underline my-auto\">";
-							echo $indicators[$rand];
-							echo "    </span>";
+									// I get the number of messages of a specific indicator
+									$tbl_to_query = str_replace(" ", "_", $indicators[$rand]);
+									$query_string = "select count(*) from `" . $tbl_to_query . "`";
+									$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									if (mysql_num_rows($query_num_msgs) > 0) {
+										while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
+											$num_msgs = $row_num_msgs[0];
+										}
+									}
 
-							// I get the value of the associated indicator (if present)
-							$variable = $indicators[$rand]."_param";
-							$variable = str_replace(" ", "_", $variable);
-							$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
+									// I choose a random message
+									$msg_id = rand(1,$num_msgs);
 
-							// I get the number of messages of a specific indicator
-							$tbl_to_query = str_replace(" ", "_", $indicators[$rand]);
-							$query_string = "select count(*) from `" . $tbl_to_query . "`";
-							$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-							if (mysql_num_rows($query_num_msgs) > 0) {
-								while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
-									$num_msgs = $row_num_msgs[0];
+									// I retrieve a message
+									$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
+									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									if (mysql_num_rows($query_msg) > 0) {
+										while ($row_msg = mysql_fetch_row($query_msg)) {
+											$msg = $row_msg[0];
+										}
+									}
+
+									echo "    <p id=\"test\" class=\"white indicator-description\">";
+									// Replace XXX in the message with the parameters from the configuration page
+									$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
+									echo $msg;
+									echo "    </p>";
+									echo "</li>";
+									unset($indicators[$rand]);
+									sort($indicators);
 								}
-							}
+							} else if ($mtd == "latin square") {
+								$index_ls_msg = $_SESSION["index"];
+								for ($i = 0; $i < count($indicators); $i++) {
+									echo "<li>";
+									echo "    <span>";
+									echo "        <img src=\"ico_indicator.png\" alt=\"\">";
+									echo "    </span>";
+									echo "    <span class=\"white underline my-auto\">";
+									$index_ls_ind = ($i+$index_ls_msg)%count($indicators);
+									echo $indicators[$index_ls_ind];
+									echo "    </span>";
 
-							// I choose a random message
-							$msg_id = rand(1,$num_msgs);
+									// I get the value of the associated indicator (if present)
+									$variable = $indicators[$index_ls_ind]."_param";
+									$variable = str_replace(" ", "_", $variable);
+									$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
 
-							// I retrieve a message
-							$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-							$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-							if (mysql_num_rows($query_msg) > 0) {
-								while ($row_msg = mysql_fetch_row($query_msg)) {
-									$msg = $row_msg[0];
+									// I get the number of messages of a specific indicator
+									$tbl_to_query = str_replace(" ", "_", $indicators[$index_ls_ind]);
+									$query_string = "select count(*) from `" . $tbl_to_query . "`";
+									$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									if (mysql_num_rows($query_num_msgs) > 0) {
+										while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
+											$num_msgs = $row_num_msgs[0];
+										}
+									}
+
+									/*// I choose a random message
+									$msg_id = rand(1,$num_msgs);*/
+
+									$msg_id = ($index_ls_msg % $num_msgs)+1;
+									//echo "ls_index: " . $index_ls_msg . "<br>";
+									//echo "num msg tab: " . $num_msgs . "<br>";
+									//echo "message n. " . $msg_id;
+
+									// I retrieve a message
+									$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
+									//echo "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
+
+									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									if (mysql_num_rows($query_msg) > 0) {
+										while ($row_msg = mysql_fetch_row($query_msg)) {
+											$msg = $row_msg[0];
+										}
+									}
+
+									echo "    <p id=\"test\" class=\"white indicator-description\">";
+									// Replace XXX in the message with the parameters from the configuration page
+									$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
+									echo $msg;
+									echo "    </p>";
+									echo "</li>";
+
+									// I increment the index
+									$index_ls_msg++;
 								}
+								$_SESSION["index"]++;
+							} else if ($mtd == "manual") {
+								/*
+								 * Manual messages handle
+								 */
 							}
-
-							echo "    <p id=\"test\" class=\"white indicator-description\">";
-							// Replace XXX in the message with the parameters from the configuration page
-							$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
-							echo $msg;
-							echo "    </p>";
-							echo "</li>";
-							unset($indicators[$rand]);
-							sort($indicators);
-						}
-					} else if ($mtd == "latin square") {
-						$index_ls = $_SESSION["index"];
-						for ($i = 0; $i < count($indicators); $i++) {
-							echo "<li>";
-							echo "    <span>";
-							echo "        <img src=\"baseline_highlight_off_white_18dp.png\" alt=\"\">";
-							echo "    </span>";
-							echo "    <span class=\"white underline my-auto\">";
-							echo $indicators[$i];
-							echo "    </span>";
-
-							// I get the value of the associated indicator (if present)
-							$variable = $indicators[$i]."_param";
-							$variable = str_replace(" ", "_", $variable);
-							$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
-
-							// I get the number of messages of a specific indicator
-							$tbl_to_query = str_replace(" ", "_", $indicators[$i]);
-							$query_string = "select count(*) from `" . $tbl_to_query . "`";
-							$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-							if (mysql_num_rows($query_num_msgs) > 0) {
-								while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
-									$num_msgs = $row_num_msgs[0];
-								}
-							}
-
-							/*// I choose a random message
-							$msg_id = rand(1,$num_msgs);*/
-
-							$msg_id = ($index_ls % $num_msgs)+1;
-							//echo "ls_index: " . $index_ls . "<br>";
-							//echo "num msg tab: " . $num_msgs . "<br>";
-							//echo "message n. " . $msg_id;
-
-							// I retrieve a message
-							$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-							//echo "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-
-							$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-							if (mysql_num_rows($query_msg) > 0) {
-								while ($row_msg = mysql_fetch_row($query_msg)) {
-									$msg = $row_msg[0];
-								}
-							}
-
-							echo "    <p id=\"test\" class=\"white indicator-description\">";
-							// Replace XXX in the message with the parameters from the configuration page
-							$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
-							echo $msg;
-							echo "    </p>";
-							echo "</li>";
-
-							// I increment the index
-							$index_ls++;
-						}
-						$_SESSION["index"]++;
-					}
-				?>
+						?>
                 </ul>
             </div>
         </div>
