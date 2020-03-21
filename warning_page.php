@@ -191,7 +191,56 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 								/*
 								 * Manual messages handle
 								 */
-							}
+ 								$messages = isset($_GET["messages"]) ? $_GET["messages"] : array();
+								$_SESSION["index"] = -1;
+
+ 								$num = count($indicators);
+ 								for ($i = 0; $i < $num; $i++) {
+ 									echo "<li>";
+ 									echo "    <span>";
+ 									echo "        <img src=\"ico_indicator.png\" alt=\"\">";
+ 									echo "    </span>";
+ 									echo "    <span class=\"white underline my-auto\">";
+ 									echo $indicators[$i];
+ 									echo "    </span>";
+
+ 									// I get the value of the associated indicator (if present)
+ 									$variable = $indicators[$rand]."_param";
+ 									$variable = str_replace(" ", "_", $variable);
+ 									$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
+
+ 									// I get the number of messages of a specific indicator
+ 									$tbl_to_query = str_replace(" ", "_", $indicators[$i]);
+ 									/*$query_string = "select count(*) from `" . $tbl_to_query . "`";
+ 									$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+ 									if (mysql_num_rows($query_num_msgs) > 0) {
+ 										while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
+ 											$num_msgs = $row_num_msgs[0];
+ 										}
+ 									}*/
+
+ 									// I choose a random message
+ 									/*$msg_id = rand(1,$num_msgs);*/
+
+ 									// I retrieve a message
+									//echo "Tabella->".$tbl_to_query." ; msg->".$messages[$i];
+									$msg_num = $messages[$i]+1;
+ 									$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_num;
+ 									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+ 									if (mysql_num_rows($query_msg) > 0) {
+ 										while ($row_msg = mysql_fetch_row($query_msg)) {
+ 											$msg = $row_msg[0];
+ 										}
+ 									}
+
+ 									echo "    <p id=\"test\" class=\"white indicator-description\">";
+ 									// Replace XXX in the message with the parameters from the configuration page
+ 									$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
+ 									echo $msg;
+ 									echo "    </p>";
+ 									echo "</li>";
+ 								}
+ 							}
 						?>
                 </ul>
             </div>
@@ -210,7 +259,7 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 		<br><br>
 		<div align="center">
 			<a href="."><button class="btn1">Back to configuration</button></a>
-			<a><button onClick="window.location.reload()" class="btn1">Generate new messages</button></a>
+			<?php if ($mtd != "manual") echo "<a><button onClick=\"window.location.reload()\" class=\"btn1\">Generate new messages</button></a>";?>
 		</div>
 		<br>
     </div>
