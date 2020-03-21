@@ -206,7 +206,6 @@ session_start();
 									  $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
 									  if (mysql_num_rows($query_msg) > 0) {
 									    echo '<div class="content">';
-									    //echo '	<form name="" action="" method="">';
 									    echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
 									    echo '		<tbody>';
 									    $i = 0;
@@ -215,7 +214,7 @@ session_start();
 									      echo '	<tr>';
 									      echo '		<td>';
 									      echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">';
-									      echo '				<input type="radio" id="'.$inds[$j].'_'.$i.'" class="mdl-radio__button" name="'.$inds[$j].'" value="'.$i.'" >';
+									      echo '				<input type="radio" name="'.$inds[$j].'" id="mess_'.$inds[$j].'" class="mdl-radio__button" value="'.$i.'" >';
 									      echo '			</label>';
 									      echo '		</td>';
 									      echo "		<td>".$msg."</td></tr>";
@@ -227,7 +226,7 @@ session_start();
 									?>
 		 						</form>
 
-		 						<button class="mdl-button mdl-js-button mdl-button--raised" onClick="formManualSubmit()" class="collapsible">
+		 						<button class="mdl-button mdl-js-button mdl-button--raised" onClick="readForm()" class="collapsible">
 		 							Continue
 		 						</button>
 								<br>
