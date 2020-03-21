@@ -19,7 +19,7 @@ session_start();
   <!-- Material Design icon font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-	<script src="setup.js"></script>
+	<!--<script src="setup.js"></script>-->
 	<script src="check.js"></script>
 
 	<style media="screen">
@@ -48,9 +48,9 @@ session_start();
 					 </div>
 
 					 <div class = "mdl-tabs__panel is-active" id = "tab1-panel">
-						 <h1 style="text-align: center; margin: auto; width: 40%;  padding: 10px;">Dynamic Setup</h1>
-						 <div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 40%;  padding: 10px;">
-							 <form id="warn_form" method="get" action="warning_page.php">
+						 <h1 style="text-align: center; margin: auto; width: 60%;  padding: 10px;">Dynamic Setup</h1>
+						 <div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 60%;  padding: 10px;">
+							 <form id="warn_form_dynamic" method="get" action="warning_page.php">
 								 <div style="text-align: center;">
 
 									 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -171,114 +171,63 @@ session_start();
 								 <br><br>
 
 							 </form>
-							 <button class="mdl-button mdl-js-button mdl-button--raised" onClick="checkForm();">Continue</button>
+							 <button class="mdl-button mdl-js-button mdl-button--raised" onClick="checkFormDynamic();">Continue</button>
 
 						 </div>
 
 					 </div>
 
 					 <div class = "mdl-tabs__panel" id = "tab2-panel">
-						 <h1 style="text-align: center; margin: auto; width: 40%;  padding: 10px;">Manual Setup</h1>
-		 					<div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 40%;  padding: 10px;">
-		 						<form id="warn_form">
+						 <h1 style = "text-align: center; margin: auto; width: 60%; padding: 10px;">Manual Setup</h1>
+		 					<div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 60%; padding: 10px;">
+		 						<form id="warn_form_manual" name="warn_form_manual" method="get" action="warning_page.php">
+									<div style="text-align: center;">
+
+ 									 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+ 								     <input class="mdl-textfield__input" name ="address" type="text" id="address">
+ 								     <label class="mdl-textfield__label" for="sample1">Insert the phishing web address</label>
+ 								   </div>
+ 	 						 		</div>
+									<input type="hidden" name="method" id="method" value="manual" />
 		 							<h4 style="text-align: center;">Select the indicators (and messages) you want to show</h4>
 									<?php
-
-									echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
-									echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator1">';
-									echo '		<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator1" value="Indicator1"/>';
-									echo '	</label>';
-									echo '	<h5 class="mdl-cell mdl-cell--10-col">Alexa Ranking</h5>';
-									echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
-									echo '		<i class="material-icons">keyboard_arrow_down</i>';
-									echo '	</button>';
-									$query_string = "select message from Alexa_Ranking";
-									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-									if (mysql_num_rows($query_msg) > 0) {
-										echo '<div class="content">';
-										echo '	<form name="" action="" method="">';
-										echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
-										echo '		<tbody>';
-										$i = 0;
-										while ($row_msg = mysql_fetch_row($query_msg)) {
-											$msg = $row_msg[0];
-											echo '	<tr>';
-										  echo '		<td>';
-											echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="indicator1-'.$i.'">';
-											echo '				<input type="radio" id="indicator1-'.$i.'" class="mdl-radio__button" name="options" value="'.$i.'" >';
-											echo '			</label>';
-											echo '		</td>';
-											echo "		<td>".$msg."</td></tr>";
-											$i++;
-										}
-										echo '		</tbody></table></form></div></div>';
-									}
-
-
-									echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
-									echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator2">';
-									echo '		<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator2" value="Indicator2"/>';
-									echo '	</label>';
-									echo '	<h5 class="mdl-cell mdl-cell--10-col">Archived Domain</h5>';
-									echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
-									echo '		<i class="material-icons">keyboard_arrow_down</i>';
-									echo '	</button>';
-									$query_string = "select message from Archived_Domain";
-									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-									if (mysql_num_rows($query_msg) > 0) {
-										echo '<div class="content">';
-										echo '	<form name="" action="" method="">';
-										echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
-										echo '		<tbody>';
-										$i = 0;
-										while ($row_msg = mysql_fetch_row($query_msg)) {
-											$msg = $row_msg[0];
-											echo '	<tr>';
-										  echo '		<td>';
-											echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="indicator2-'.$i.'">';
-											echo '				<input type="radio" id="indicator2-'.$i.'" class="mdl-radio__button" name="options" value="'.$i.'" >';
-											echo '			</label>';
-											echo '		</td>';
-											echo "		<td>".$msg."</td></tr>";
-											$i++;
-										}
-										echo '		</tbody></table></form></div></div>';
-									}
-
-
-									echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
-									echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Indicator3">';
-									echo '		<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Indicator3" value="Indicator3"/>';
-									echo '	</label>';
-									echo '	<h5 class="mdl-cell mdl-cell--10-col">Name Length</h5>';
-									echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
-									echo '		<i class="material-icons">keyboard_arrow_down</i>';
-									echo '	</button>';
-									$query_string = "select message from Name_Length";
-									$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-									if (mysql_num_rows($query_msg) > 0) {
-										echo '<div class="content">';
-										echo '	<form name="" action="" method="">';
-										echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
-										echo '		<tbody>';
-										$i = 0;
-										while ($row_msg = mysql_fetch_row($query_msg)) {
-											$msg = $row_msg[0];
-											echo '	<tr>';
-										  echo '		<td>';
-											echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="indicator3-'.$i.'">';
-											echo '				<input type="radio" id="indicator3-'.$i.'" class="mdl-radio__button" name="options" value="'.$i.'" >';
-											echo '			</label>';
-											echo '		</td>';
-											echo "		<td>".$msg."</td></tr>";
-											$i++;
-										}
-										echo '		</tbody></table></form></div></div>';
+									$inds = ["URL Mimicking", "Self-Signed HTTPs cetrificate", "Time Life (Age)", "Archived Domain", "Server Location", "Alexa Ranking", "Name Length", "Top-level Domain"];
+									for ($j = 0; $j < count($inds); $j++) {
+									  echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
+									  echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">';
+									  echo "		<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"".$inds[$j]."\" value=\"".$inds[$j]."\" />";
+									  echo '	</label>';
+									  echo '	<h5 class="mdl-cell mdl-cell--10-col">'.$inds[$j].'</h5>';
+									  echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
+									  echo '		<i class="material-icons">keyboard_arrow_down</i>';
+									  echo '	</button>';
+										$tbl_name = str_replace(" ", "_", $inds[$j]);
+									  $query_string = "select message from `".$tbl_name."`";
+									  $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+									  if (mysql_num_rows($query_msg) > 0) {
+									    echo '<div class="content">';
+									    //echo '	<form name="" action="" method="">';
+									    echo '		<table cellpadding="5" cellspacing="5" class="mdl-data-table--selectable mdl-shadow--2dp">';
+									    echo '		<tbody>';
+									    $i = 0;
+									    while ($row_msg = mysql_fetch_row($query_msg)) {
+									      $msg = $row_msg[0];
+									      echo '	<tr>';
+									      echo '		<td>';
+									      echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">';
+									      echo '				<input type="radio" id="'.$inds[$j].'_'.$i.'" class="mdl-radio__button" name="'.$inds[$j].'" value="'.$i.'" >';
+									      echo '			</label>';
+									      echo '		</td>';
+									      echo "		<td>".$msg."</td></tr>";
+									      $i++;
+									    }
+									    echo '		</tbody></table></div></div>';
+									  }
 									}
 									?>
 		 						</form>
 
-		 						<button class="mdl-button mdl-js-button mdl-button--raised" onclick="checkForm()" class="collapsible">
+		 						<button class="mdl-button mdl-js-button mdl-button--raised" onClick="formManualSubmit()" class="collapsible">
 		 							Continue
 		 						</button>
 								<br>
