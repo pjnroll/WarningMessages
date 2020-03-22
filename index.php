@@ -52,8 +52,8 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 					 </div>
 
 					 <div class = "mdl-tabs__panel is-active" id = "tab1-panel">
-						 <h1 style="text-align: center; margin: auto; width: 60%;  padding: 10px;">Dynamic Setup</h1>
-						 <div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 60%;  padding: 10px;">
+						 <h1 style="text-align: center; margin: auto; width: 80%;  padding: 10px;">Dynamic Setup</h1>
+						 <div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 80%;  padding: 10px;">
 							 <form id="warn_form_dynamic" method="get" action="warning_page.php">
 								 <div style="text-align: center;">
 
@@ -70,6 +70,11 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 									 <?php
 									 for ($i = 0; $i < count($inds); $i++) {
 											echo "<li class=\"mdl-list__item\">";
+							 				echo "	<span class=\"mdl-list__item-secondary-action\">";
+							 				echo "		<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"".$inds[$i]."\">";
+							 				echo "			<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"".$inds[$i]."\" value=\"".$inds[$i]."\"/>";
+							 				echo "		</label>";
+							 				echo "	</span>";
 							 				echo "	<span class=\"mdl-list__item-primary-content\">";
 							 				echo "		<label for=\"".$inds[$i]."\"><b>".$inds[$i]."</b></label>";
 							 				echo "	</span>";
@@ -81,11 +86,7 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 												//echo "	<input type=\"text\" placeholder=\"".$placeholders[$i]."\" name=\"".$inds[$i]."_param\" id =\"".$inds[$i]."_param\" />&ensp;";
 												echo "	<input type=\"text\" name=\"".$inds[$i]."_param\" id =\"".$inds[$i]."_param\" />&ensp;";
 											}
-							 				echo "	<span class=\"mdl-list__item-secondary-action\">";
-							 				echo "		<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"".$inds[$i]."\">";
-							 				echo "			<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"".$inds[$i]."\" value=\"".$inds[$i]."\"/>";
-							 				echo "		</label>";
-							 				echo "	</span>";
+
 							 				echo "</li>";
 										}
 										?>
@@ -109,8 +110,8 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 					 </div>
 
 					 <div class = "mdl-tabs__panel" id = "tab2-panel">
-						 <h1 style = "text-align: center; margin: auto; width: 60%; padding: 10px;">Manual Setup</h1>
-		 					<div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 60%; padding: 10px;">
+						 <h1 style = "text-align: center; margin: auto; width: 80%; padding: 10px;">Manual Setup</h1>
+		 					<div class="mdl-card mdl-shadow--2dp" style="margin: auto; width: 70%; padding: 10px;">
 		 						<form id="warn_form_manual" name="warn_form_manual" method="get" action="warning_page.php">
 									<div style="text-align: center;">
 
@@ -124,14 +125,22 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 									for ($j = 0; $j < count($inds); $j++) {
 									  echo "<div style=\"margin:0;\" class=\"mdl-grid mdl-shadow--2dp\">\n";
 									  echo "	<label class=\"mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\">\n";
-									  echo "		<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"chk_".$inds[$j]."\" value=\"".$inds[$j]."\" onclick=\"checkCheckbox('$inds[$j]')\"/>\n";
+									  echo "		<input class=\"collapsible mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"chk_".$inds[$j]."\" value=\"".$inds[$j]."\" onclick=\"checkCheckbox('$inds[$j]')\"/>\n";
 									  echo "	</label>\n";
-									  echo "	<h5 class=\"mdl-cell mdl-cell--10-col\">".$inds[$j]."</h5>\n";
-										if ($placeholders[$j] != "")	echo "	<input class=\"mdl-cell mdl-cell--10-col\" type=\"text\" name=\"".$inds[$i]."_param\" id =\"".$inds[$i]."_param\" />&ensp;";
+										if ($placeholders[$j] != "")	{
+                    	echo "	<h5 class=\"mdl-cell mdl-cell--3-col\">".$inds[$j]."</h5>\n";
+									    echo "	<h6 style='text-align:right;' class=\"mdl-cell mdl-cell--5-col\">$placeholders[$j]</h5>\n";
+                      echo "	<input  style='height: 20%;' class=\"mdl-cell mdl-cell--3-col\" type=\"text\" name=\"".$inds[$j]."_param_manual\" id =\"".$inds[$j]."_param_manual\" />&ensp;";
+                     /* echo "	<button style='margin:0;' type=\"button\" class=\"collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect\" id=\"btn_".$inds[$j]."\">";
+                      echo '		<i class="material-icons">keyboard_arrow_down</i>';
+                      echo '	</button>';*/
+                    } else {
+                    	echo "	<h5 class=\"mdl-cell mdl-cell--11-col\">".$inds[$j]."</h5>\n";
+                     /* echo "	<button type=\"button\" class=\"collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect\" id=\"btn_".$inds[$j]."\">";
+                      echo '		<i class="material-icons">keyboard_arrow_down</i>';
+                      echo '	</button>';*/
+                    }
 
-									  echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
-									  echo '		<i class="material-icons">keyboard_arrow_down</i>';
-									  echo '	</button>';
 										$tbl_name = str_replace(" ", "_", $inds[$j]);
 									  $query_string = "select message from `".$tbl_name."`";
 									  $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
@@ -174,7 +183,12 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 			for (i = 0; i < coll.length; i++) {
 				coll[i].addEventListener("click", function() {
 					this.classList.toggle("active");
-					var content = this.nextElementSibling;
+					var content = this.parentNode.nextElementSibling;
+					while(content.nodeName  != "DIV" && content != null){
+						content = content.nextElementSibling
+						console.log(content)
+
+					}
 					if (content.style.display === "block") {
 						content.style.display = "none";
 					} else {
