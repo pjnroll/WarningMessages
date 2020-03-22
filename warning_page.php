@@ -205,8 +205,10 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
  									echo "    </span>";
 
  									// I get the value of the associated indicator (if present)
- 									$variable = $indicators[$rand]."_param";
- 									$variable = str_replace(" ", "_", $variable);
+
+ 									$variable = str_replace(" ", "_", $indicators[$i]);
+ 									$variable = $variable."_param";
+ 									//$variable = str_replace(" ", "_", $variable);
  									$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
 
  									// I get the number of messages of a specific indicator
