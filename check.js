@@ -54,7 +54,9 @@ function isValidMessage(message) {
 }
 
 function checkFormManual(indicators, messages) {
-  if (!validIndicators(indicators) || !validMessages(messages)) {
+  if (indicators == null) {
+    return "You must choose at least one indicator";
+  } else if (!validIndicators(indicators) || !validMessages(messages)) {
     return "You made mistakes in choosing indicators and messages. Check better.";
   } else if (indicators.length != messages.length) {
     return "You didn't chose one ore more messages";
@@ -66,37 +68,56 @@ function checkFormManual(indicators, messages) {
 }
 
 function readForm() {
+  var params = document.getElementsByClassName("parameters");
+  var param_name = [];
+  var param_value = [];
+  for (var i = 0; i < params.length; i++) {
+    param_name.push(params[i].id);
+    param_value.push(params[i].value);
+    alert((i+1) + "->" + param_name[i]+":"+param_value[i]);
+  }
   var method = "manual";
   var checkedBoxesRadios = getCheckedBoxes("warn_form_manual");
   var indicators = [];
   var messages = [];
-  for (var i=0; i < checkedBoxesRadios.length; i++) {
-    // it gets 1 indicator and 1 message, alternating each time
-    if (i % 2 == 0) {
-      indicators.push(checkedBoxesRadios[i]);
-    } else {
-      messages.push(checkedBoxesRadios[i]);
-    }
-  }
-  var ans = checkFormManual(indicators, messages);
-  if (ans != "true") {
-    alert(ans);
+  if (checkedBoxesRadios == null) {
+    alert("You must choose at least one indicator.");
   } else {
-    var json_params = {"method":method, "indicators":indicators, "messages":messages};
-    location.replace("/warning_page.php" + "?" + $.param(json_params));
+    for (var i=0; i < checkedBoxesRadios.length; i++) {
+      // it gets 1 indicator and 1 message, alternating each time
+      if (i % 2 == 0) {
+        indicators.push(checkedBoxesRadios[i]);
+      } else {
+        messages.push(checkedBoxesRadios[i]);
+      }
+    }
+    var ans = checkFormManual(indicators, messages);
+    if (ans != "true") {
+      alert(ans);
+    } else {
+      var json_params = {"method":method, "indicators":indicators, "messages":messages};
+      //alert("we->" + JSON.stringify(json_params));
+      var my_params = "{";
+      for (var i = 0; i < indicators.length; i++) {
+        var val = document.getElementById(indicators[i]+"_param_manual").value;
+        my_params += "\"" + indicators[i] + "_param\":\""+val+"\",";
+      }
+      var l = my_params.length;
+      my_params = my_params.substring(0, l-1);
+      my_params += "}";
+      my_params = JSON.parse(my_params);
+      //alert("my->" + my_params);
+      location.replace("/warning_page.php" + "?" + $.param(json_params) + "&" + $.param(my_params));
+    }
   }
 }
 
 function checkCheckbox(ident) {
-  /*var form = document.getElementById("warn_form_manual").innerHTML;
-  alert("form\n"+form);*/
+  document.getElementById("btn_"+ident).click();
   var el = document.getElementById("chk_" + ident);
-  alert(el.type);
-  alert(ident + "->" + el.checked);
   if (el.checked == false) {
     var radio = document.getElementById("mess_" + ident);
-    radio.checked = true;
+    radio.click();
     radio.checked = false;
   }
-
 }
