@@ -63,101 +63,30 @@ session_start();
 								 <h4 style="text-align: center;">Select the indicators you want to show</h4>
 
 								 <ul class="mdl-list" id="indicators">
-										 <li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="URL Mimicking">URL Mimicking</label>
-						 					</span>
-						 					<input type="text" placeholder="Actual web address" name="URL_Mimicking_param" id ="URL Mimicking_param" />&ensp;
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="URL Mimicking">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="URL Mimicking" value="URL Mimicking"/>
-						 						</label>
-						 					</span>
-						 				</li>
+									 <?php
+									 $inds = ["URL Mimicking", "Self-Signed HTTPs cetrificate", "Time Life (Age)", "Archived Domain", "Server Location", "Alexa Ranking", "Name Length", "Top-level Domain"];
+									 $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", "", "Location of the server (e.g. Russia)", "Alexa Ranking score (e.g. 24)", "", "Full top level domain (e.g. .cf)"];
+									 for ($i = 0; $i < count($inds); $i++) {
+											echo "<li class=\"mdl-list__item\">";
+							 				echo "	<span class=\"mdl-list__item-primary-content\">";
+							 				echo "		<label for=\"".$inds[$i]."\">".$inds[$i]."</label>";
+							 				echo "	</span>";
+							 				if ($placeholders[$i] != "") {
+								 				echo "	<span class=\"mdl-list__item-secondary-content\">";
+								 				echo "		<label for=\"".$inds[$i]."_param\">".$placeholders[$i]."&ensp;</label>";
+								 				echo "	</span>";
 
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Self-Signed HTTPs cetrificate">Self-Signed HTTPs cetrificate</label>
-						 					</span>
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Self-Signed HTTPs cetrificate">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Self-Signed HTTPs cetrificate" value="Self-Signed HTTPs cetrificate"/>
-						 						</label>
-						 					</span>
-						 				</li>
-
-
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Time Life (Age)">Time Life (Age)</label>
-						 					</span>
-						 					<input type="text" placeholder="Age of the domain (e.g. 2 days)" name="Time_Life_(Age)_param" id ="Time Life (Age)_param" />&ensp;
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Time Life (Age)">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Time Life (Age)" value="Time Life (Age)"/>
-						 						</label>
-						 					</span>
-						 				</li>
-
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Archived Domain">Archived Domain</label>
-						 					</span>
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Archived Domain">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Archived Domain" value="Archived Domain"/>
-						 						</label>
-						 					</span>
-						 				</li>
-
-
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Server Location">Server Location</label>
-						 					</span>
-						 					<input type="text" placeholder="Location of the server (e.g. Russia)" name="Server_Location_param" id ="Server Location_param" />&ensp;
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Server Location">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Server Location" value="Server Location"/>
-						 						</label>
-						 					</span>
-						 				</li>
-
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Alexa Ranking">Alexa Ranking</label>
-						 					</span>
-						 					<input type="text" placeholder="Alexa Ranking score (e.g. 24)" name="Alexa_Ranking_param" id ="Alexa Ranking_param" />&ensp;
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Alexa Ranking">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Alexa Ranking" value="Alexa Ranking"/>
-						 						</label>
-						 					</span>
-						 				</li>
-
-
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Name Length">Name Length</label>
-						 					</span>
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Name Length">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Name Length" value="Name Length"/>
-						 						</label>
-						 					</span>
-						 				</li>
-
-						 				<li class="mdl-list__item">
-						 					<span class="mdl-list__item-primary-content">
-						 						<label for="Top-level Domain">Top-level Domain</label>
-						 					</span>
-						 					<input type="text" placeholder="Full top level domain (e.g. .cf)" name="Top-level_Domain_param" id ="Top-level Domain_param" />&ensp;
-						 					<span class="mdl-list__item-secondary-action">
-						 						<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="Top-level Domain">
-						 							<input class="mdl-checkbox__input" type="checkbox" name="indicators[]" id="Top-level Domain" value="Top-level Domain"/>
-						 						</label>
-						 					</span>
-						 				</li>
+												//echo "	<input type=\"text\" placeholder=\"".$placeholders[$i]."\" name=\"".$inds[$i]."_param\" id =\"".$inds[$i]."_param\" />&ensp;";
+												echo "	<input type=\"text\" name=\"".$inds[$i]."_param\" id =\"".$inds[$i]."_param\" />&ensp;";
+											}
+							 				echo "	<span class=\"mdl-list__item-secondary-action\">";
+							 				echo "		<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"".$inds[$i]."\">";
+							 				echo "			<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"".$inds[$i]."\" value=\"".$inds[$i]."\"/>";
+							 				echo "		</label>";
+							 				echo "	</span>";
+							 				echo "</li>";
+										}
+										?>
 								 </ul>
 								 <br>
 
