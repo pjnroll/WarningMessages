@@ -1,6 +1,10 @@
 <?php
 include("utils/db_con.php");
 session_start();
+
+$inds = ["URL Mimicking", "Self-Signed HTTPs cetrificate", "Time Life (Age)", "Archived Domain", "Server Location", "Alexa Ranking", "Name Length", "Top-level Domain"];
+$placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", "", "Location of the server (e.g. Russia)", "Alexa Ranking score (e.g. 24)", "", "Full top level domain (e.g. .cf)"];
+
 ?>
 
 <!DOCTYPE html>
@@ -64,12 +68,10 @@ session_start();
 
 								 <ul class="mdl-list" id="indicators">
 									 <?php
-									 $inds = ["URL Mimicking", "Self-Signed HTTPs cetrificate", "Time Life (Age)", "Archived Domain", "Server Location", "Alexa Ranking", "Name Length", "Top-level Domain"];
-									 $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", "", "Location of the server (e.g. Russia)", "Alexa Ranking score (e.g. 24)", "", "Full top level domain (e.g. .cf)"];
 									 for ($i = 0; $i < count($inds); $i++) {
 											echo "<li class=\"mdl-list__item\">";
 							 				echo "	<span class=\"mdl-list__item-primary-content\">";
-							 				echo "		<label for=\"".$inds[$i]."\">".$inds[$i]."</label>";
+							 				echo "		<label for=\"".$inds[$i]."\"><b>".$inds[$i]."</b></label>";
 							 				echo "	</span>";
 							 				if ($placeholders[$i] != "") {
 								 				echo "	<span class=\"mdl-list__item-secondary-content\">";
@@ -117,16 +119,16 @@ session_start();
  								     <label class="mdl-textfield__label" for="sample1">Insert the phishing web address</label>
  								   </div>
  	 						 		</div>
-									<input type="hidden" name="method" id="method" value="manual" />
 		 							<h4 style="text-align: center;">Select the indicators (and messages) you want to show</h4>
 									<?php
-									$inds = ["URL Mimicking", "Self-Signed HTTPs cetrificate", "Time Life (Age)", "Archived Domain", "Server Location", "Alexa Ranking", "Name Length", "Top-level Domain"];
 									for ($j = 0; $j < count($inds); $j++) {
-									  echo '<div style="margin:0;" class="mdl-grid mdl-shadow--2dp">';
-									  echo '	<label class="mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">';
-									  echo "		<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"".$inds[$j]."\" value=\"".$inds[$j]."\" />";
-									  echo '	</label>';
-									  echo '	<h5 class="mdl-cell mdl-cell--10-col">'.$inds[$j].'</h5>';
+									  echo "<div style=\"margin:0;\" class=\"mdl-grid mdl-shadow--2dp\">\n";
+									  echo "	<label class=\"mdl-cell mdl-cell--1-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\">\n";
+									  echo "		<input class=\"mdl-checkbox__input\" type=\"checkbox\" name=\"indicators[]\" id=\"chk_".$inds[$j]."\" value=\"".$inds[$j]."\" onclick=\"checkCheckbox('$inds[$j]')\"/>\n";
+									  echo "	</label>\n";
+									  echo "	<h5 class=\"mdl-cell mdl-cell--10-col\">".$inds[$j]."</h5>\n";
+										if ($placeholders[$j] != "")	echo "	<input class=\"mdl-cell mdl-cell--10-col\" type=\"text\" name=\"".$inds[$i]."_param\" id =\"".$inds[$i]."_param\" />&ensp;";
+
 									  echo '	<button type="button" class="collapsible mdl-cell mdl-cell--1-col mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">';
 									  echo '		<i class="material-icons">keyboard_arrow_down</i>';
 									  echo '	</button>';
@@ -140,16 +142,16 @@ session_start();
 									    $i = 0;
 									    while ($row_msg = mysql_fetch_row($query_msg)) {
 									      $msg = $row_msg[0];
-									      echo '	<tr>';
-									      echo '		<td>';
-									      echo '			<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect">';
-									      echo '				<input type="radio" name="'.$inds[$j].'" id="mess_'.$inds[$j].'" class="mdl-radio__button" value="'.$i.'" >';
-									      echo '			</label>';
-									      echo '		</td>';
-									      echo "		<td>".$msg."</td></tr>";
+									      echo "	<tr>\n";
+									      echo "		<td>\n";
+									      echo "			<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\">\n";
+									      echo "				<input type=\"radio\" name=\"".$inds[$j]."\" id=\"mess_".$inds[$j]."\" class=\"mdl-radio__button\" value=\"".$i."\" >\n";
+									      echo "			</label>\n";
+									      echo "		</td>\n";
+									      echo "		<td>".$msg."</td></tr>\n";
 									      $i++;
 									    }
-									    echo '		</tbody></table></div></div>';
+									    echo "		</tbody></table></div></div>";
 									  }
 									}
 									?>
