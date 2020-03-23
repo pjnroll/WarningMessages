@@ -16,9 +16,11 @@ $mtd = $_GET["method"];
 
 $address = $_GET["address"];
 
+//echo "prima di if index:".$_SESSION["index"];
 if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] == -1)) {
-	//echo "Sono dentro";
+	//echo "prima index:".$_SESSION["index"];
 	$_SESSION["index"] = 0;
+	//echo "\ndopo index:".$_SESSION["index"];
 }
 ?>
 
@@ -59,86 +61,29 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 
         <!-- start indicators panels -->
         <?php
-          //$n_indicators = count($indicators);
           if ($n_indicators == 1) {
-            $class = "col-md-9 offset-md-1";
+	          $class = "col-md-9";
           } else if ($n_indicators == 2) {
-            $class = "col-md-4 offset-md-1";
-            $class_ = "col-md-4 offset-md-1";
+	          $class = "col-md-4";
           } else if ($n_indicators == 3) {
-            $class = "col-md-3 offset-md-1";
-            $class_ = "col-md-3";
-          } else if ($n_indicators == 4) {
-            $class = "col-md-2 offset-md-1";
-            $class_ = "col-md-2";
+	          $class = "col-md-3";
+          } else if ($n_indicators > 3) {
+	          $class = "col-md-2";
           }
          ?>
 
         <div class="row mt-3">
-
           <?php
           $inds_msgs = array();
           if ($mtd == "random") {
             $_SESSION["index"] = -1;
-            $rand = rand(0, count($indicators)-1);
-            echo "<div class=\"".$class."\">\n";
-            echo "    <div class=\"card\">\n";
-            echo "        <div class=\"card-header\">\n";
-            echo $indicators[$rand]."\n";
 
-            // I get the value of the associated indicator (if present)
-            $variable = $indicators[$rand]."_param";
-            $variable = str_replace(" ", "_", $variable);
-            $indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
-
-            // I get the number of messages of a specific indicator
-            $tbl_to_query = str_replace(" ", "_", $indicators[$rand]);
-            $query_string = "select count(*) from `" . $tbl_to_query . "`";
-            $query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-            if (mysql_num_rows($query_num_msgs) > 0) {
-              while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
-                $num_msgs = $row_num_msgs[0];
-              }
-            }
-
-            // I choose a random message
-            $msg_id = rand(1,$num_msgs);
-
-            $inds_msgs[0] = [$indicators[$rand], $msg_id];
-
-            // I retrieve a message
-            $query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-            $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-            if (mysql_num_rows($query_msg) > 0) {
-              while ($row_msg = mysql_fetch_row($query_msg)) {
-                $msg = $row_msg[0];
-              }
-            }
-
-            // Replace XXX in the message with the parameters from the configuration page
-            $msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
-
-            // Replace YYY in the message with the address of the phishing website
-            $msg = str_replace("YYY", "<b>$address</b>", $msg);
-
-            echo "        </div>\n";
-            echo "        <div class=\"card-body\">\n";
-            //echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
-            echo "            <p class=\"card-text\">".$msg."</p>\n";
-
-            echo "        </div>\n";
-            echo "    </div>\n";
-            echo "</div>\n";
-
-            unset($indicators[$rand]);
-            sort($indicators);
-
-            for ($i = 0; $i < $n_indicators-1; $i++) {
+            for ($i = 0; $i < $n_indicators; $i++) {
               $rand = rand(0, count($indicators)-1);
-              echo "<div class=\"".$class_."\">\n";
+              echo "<div class=\"".$class; if ($i == 0 || $n_indicators == 2) echo " offset-md-1"; echo "\">\n";
               echo "    <div class=\"card\">\n";
               echo "        <div class=\"card-header\">\n";
-              echo $indicators[$rand]."\n";
+              echo "<b>".$indicators[$rand]."</b>\n";
 
               // I get the value of the associated indicator (if present)
               $variable = $indicators[$rand]."_param";
@@ -158,7 +103,9 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
               // I choose a random message
               $msg_id = rand(1,$num_msgs);
 
-              $inds_msgs[$i+1] = [$indicators[$rand], $msg_id];
+							// I save the indicator and the id msg to show a different message
+							// in the Explain More section
+	            $inds_msgs[$i] = [$indicators[$rand], $msg_id];
 
               // I retrieve a message
               $query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
@@ -183,63 +130,74 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
               echo "        </div>\n";
               echo "    </div>\n";
               echo "</div>\n";
+
+							// I remove the indicator and sort the array to randomize
+							// the indicators order
               unset($indicators[$rand]);
               sort($indicators);
             }
-          }
+          } else if ($mtd == "latin square") {
+						//$index_ls_msg = $_SESSION["index"];
+						for ($i = 0; $i < count($indicators); $i++) {
+							$index_ls_ind = ($i+$_SESSION["index"])%count($indicators);
+							echo "<div class=\"".$class; if ($i == 0 || $n_indicators == 2) echo " offset-md-1"; echo "\">\n";
+              echo "    <div class=\"card\">\n";
+              echo "        <div class=\"card-header\">\n";
+              echo "<b>".$indicators[$index_ls_ind]."</b>\n";
+
+							// I get the value of the associated indicator (if present)
+							$variable = $indicators[$index_ls_ind]."_param";
+							$variable = str_replace(" ", "_", $variable);
+							$indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
+
+							// I get the number of messages of a specific indicator
+							$tbl_to_query = str_replace(" ", "_", $indicators[$index_ls_ind]);
+							$query_string = "select count(*) from `" . $tbl_to_query . "`";
+							$query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+							if (mysql_num_rows($query_num_msgs) > 0) {
+								while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
+									$num_msgs = $row_num_msgs[0];
+								}
+							}
+
+							$msg_id = ($_SESSION["index"] % $num_msgs)+1;
+							//echo "msg:$msg_id";
+
+							// I save the indicator and the id msg to show a different message
+							// in the Explain More section
+	            $inds_msgs[$i] = [$indicators[$index_ls_ind], $msg_id];
+							echo "ind:".$inds_msgs[$i][0]." msg:".$inds_msgs[$i][1];
+
+							// I retrieve a message
+							$query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
+
+							$query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+							if (mysql_num_rows($query_msg) > 0) {
+								while ($row_msg = mysql_fetch_row($query_msg)) {
+									$msg = $row_msg[0];
+								}
+							}
+
+							// Replace XXX in the message with the parameters from the configuration page
+							$msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
+
+							// Replace YYY in the message with the address of the phishing website
+							$msg = str_replace("YYY", "<b>$address</b>", $msg);
+
+							echo "        </div>\n";
+							echo "        <div class=\"card-body\">\n";
+							//echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
+							echo "            <p class=\"card-text\">".$msg."</p>\n";
+
+							echo "        </div>\n";
+							echo "    </div>\n";
+							echo "</div>\n";
+
+						}
+						$_SESSION["index"]++;
+
+					}
           ?>
-
-
-
-
-            <!--<div class="col-md-2 offset-md-1">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>-->
         </div>
 
         <!-- end indicators panels -->
@@ -259,184 +217,120 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
         <div id="explain-more-cards" class="row mt-3">
 
           <?php
-          echo "<div class=\"".$class."\">\n";
-          echo "    <div class=\"card\">\n";
-          echo "        <div class=\"card-header\">\n";
-          echo $inds_msgs[0][0]."\n";
+					if ($mtd == "random") {
+	          for ($i = 0; $i < $n_indicators; $i++) {
+	            echo "<div class=\"".$class; if ($i == 0 || $n_indicators == 2) echo " offset-md-1"; echo "\">\n";
+	            echo "    <div class=\"card\">\n";
+	            echo "        <div class=\"card-header\">\n";
+	            echo "<b>".$inds_msgs[$i][0]."</b>\n";
 
-          // I get the value of the associated indicator (if present)
-          $variable = $inds_msgs[0][0]."_param";
-          $variable = str_replace(" ", "_", $variable);
-          $indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
+	            // I get the value of the associated indicator (if present)
+	            $variable = $inds_msgs[$i][0]."_param";
+	            $variable = str_replace(" ", "_", $variable);
+	            $indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
 
-          // I get the number of messages of a specific indicator
-          $tbl_to_query = str_replace(" ", "_", $inds_msgs[0][0]);
-          $query_string = "select count(*) from `" . $tbl_to_query . "`";
-          $query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-          if (mysql_num_rows($query_num_msgs) > 0) {
-            while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
-              $num_msgs = $row_num_msgs[0];
-            }
-          }
+	            // I get the number of messages of a specific indicator
+	            $tbl_to_query = str_replace(" ", "_", $inds_msgs[$i][0]);
+	            $query_string = "select count(*) from `" . $tbl_to_query . "`";
+	            $query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+	            if (mysql_num_rows($query_num_msgs) > 0) {
+	              while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
+	                $num_msgs = $row_num_msgs[0];
+	              }
+	            }
 
-          // I choose a random message
-          $msg_id = rand(1,$num_msgs);
-          while ($msg_id == $inds_msgs[0][1]) {
-            $msg_id = rand(1,$num_msgs);
-          }
+	            // I choose a random message
+	            $msg_id = rand(1,$num_msgs);
+	            while ($msg_id == $inds_msgs[$i][1]) {
+	              $msg_id = rand(1,$num_msgs);
+	            }
 
-          //$inds_msgs[0] = {$indicators[$rand], $msg_id};
+	            // I retrieve a message
+	            $query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
+	            $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+	            if (mysql_num_rows($query_msg) > 0) {
+	              while ($row_msg = mysql_fetch_row($query_msg)) {
+	                $msg = $row_msg[0];
+	              }
+	            }
 
-          // I retrieve a message
-          $query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-          $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-          if (mysql_num_rows($query_msg) > 0) {
-            while ($row_msg = mysql_fetch_row($query_msg)) {
-              $msg = $row_msg[0];
-            }
-          }
+	            // Replace XXX in the message with the parameters from the configuration page
+	            $msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
 
-          // Replace XXX in the message with the parameters from the configuration page
-          $msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
+	            // Replace YYY in the message with the address of the phishing website
+	            $msg = str_replace("YYY", "<b>$address</b>", $msg);
 
-          // Replace YYY in the message with the address of the phishing website
-          $msg = str_replace("YYY", "<b>$address</b>", $msg);
+	            echo "        </div>\n";
+	            echo "        <div class=\"card-body\">\n";
+	            //echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
+	            echo "            <p class=\"card-text\">".$msg."</p>\n";
 
-          echo "        </div>\n";
-          echo "        <div class=\"card-body\">\n";
-          //echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
-          echo "            <p class=\"card-text\">".$msg."</p>\n";
+	            echo "        </div>\n";
+	            echo "    </div>\n";
+	            echo "</div>\n";
+	          }
+					} else if ($mtd == "latin square") {
+		          for ($i = 0; $i < $n_indicators; $i++) {
+		            echo "<div class=\"".$class; if ($i == 0 || $n_indicators == 2) echo " offset-md-1"; echo "\">\n";
+		            echo "    <div class=\"card\">\n";
+		            echo "        <div class=\"card-header\">\n";
+		            echo "<b>".$inds_msgs[$i][0]."</b>\n";
 
-          echo "        </div>\n";
-          echo "    </div>\n";
-          echo "</div>\n";
+		            // I get the value of the associated indicator (if present)
+		            $variable = $inds_msgs[$i][0]."_param";
+		            $variable = str_replace(" ", "_", $variable);
+		            $indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
 
-          /*unset($indicators[$inds_msgs[0][0]]);
-          sort($indicators);*/
+		            // I get the number of messages of a specific indicator
+		            $tbl_to_query = str_replace(" ", "_", $inds_msgs[$i][0]);
+		            $query_string = "select count(*) from `" . $tbl_to_query . "`";
+		            $query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+		            if (mysql_num_rows($query_num_msgs) > 0) {
+		              while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
+		                $num_msgs = $row_num_msgs[0];
+		              }
+		            }
 
-          for ($i = 0; $i < $n_indicators-1; $i++) {
-            //$rand = rand(0, count($indicators)-1);
-            echo "<div class=\"".$class_."\">\n";
-            echo "    <div class=\"card\">\n";
-            echo "        <div class=\"card-header\">\n";
-            echo $inds_msgs[$i+1][0]."\n";
+		            // I choose a random message
+								//$msg_id = (($inds_msgs[$i][1]+1) % $num_msgs)+1;
+		            /*$msg_id = rand(1,$num_msgs);
+		            while ($msg_id == $inds_msgs[$i][1]) {
+		              $msg_id = rand(1,$num_msgs);
+		            }*/
 
-            // I get the value of the associated indicator (if present)
-            $variable = $inds_msgs[$i+1][0]."_param";
-            $variable = str_replace(" ", "_", $variable);
-            $indicator_parameter = isset($_GET[$variable]) ? $_GET[$variable] : null;
+								echo "ind:".$inds_msgs[$i][0]." msg:".$inds_msgs[$i][1];
+								echo "\nprima msg:".$msg_id;
+								$msg_id = ($msg_id+1)%$num_msgs;// = $inds_msgs[$i][1] + 1;
 
-            // I get the number of messages of a specific indicator
-            $tbl_to_query = str_replace(" ", "_", $inds_msgs[$i+1][0]);
-            $query_string = "select count(*) from `" . $tbl_to_query . "`";
-            $query_num_msgs = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-            if (mysql_num_rows($query_num_msgs) > 0) {
-              while ($row_num_msgs = mysql_fetch_row($query_num_msgs)) {
-                $num_msgs = $row_num_msgs[0];
-              }
-            }
+								echo "\ndopo msg:".$msg_id;
+		            // I retrieve a message
+		            $query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
+		            $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
+		            if (mysql_num_rows($query_msg) > 0) {
+									echo "Lo prendo nuovo";
+		              while ($row_msg = mysql_fetch_row($query_msg)) {
+		                $msg = $row_msg[0];
+		              }
+		            } else {echo "Uso il vecchio";}
 
-            // I choose a random message
-            $msg_id = rand(1,$num_msgs);
-            while ($msg_id == $inds_msgs[$i+1][1]) {
-              $msg_id = rand(1,$num_msgs);
-            }
+		            // Replace XXX in the message with the parameters from the configuration page
+		            $msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
 
-            // I retrieve a message
-            $query_string = "select message from `" . $tbl_to_query . "` where id = " . $msg_id;
-            $query_msg = mysql_query($query_string) or DIE('query non riuscita: '.$query_string.' '.mysql_error());
-            if (mysql_num_rows($query_msg) > 0) {
-              while ($row_msg = mysql_fetch_row($query_msg)) {
-                $msg = $row_msg[0];
-              }
-            }
+		            // Replace YYY in the message with the address of the phishing website
+		            $msg = str_replace("YYY", "<b>$address</b>", $msg);
 
-            // Replace XXX in the message with the parameters from the configuration page
-            $msg = str_replace("XXX", "<b>$indicator_parameter</b>", $msg);
+		            echo "        </div>\n";
+		            echo "        <div class=\"card-body\">\n";
+		            //echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
+		            echo "            <p class=\"card-text\">".$msg."</p>\n";
 
-            // Replace YYY in the message with the address of the phishing website
-            $msg = str_replace("YYY", "<b>$address</b>", $msg);
-
-            echo "        </div>\n";
-            echo "        <div class=\"card-body\">\n";
-            //echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
-            echo "            <p class=\"card-text\">".$msg."</p>\n";
-
-            echo "        </div>\n";
-            echo "    </div>\n";
-            echo "</div>\n";
-            /*unset($indicators[$rand]);
-            sort($indicators);*/
-          }
+		            echo "        </div>\n";
+		            echo "    </div>\n";
+		            echo "</div>\n";
+		          }
+					}
           ?>
 
-          <?php/*
-            echo "<div class=\"".$class."\">\n";
-            echo "    <div class=\"card\">\n";
-            echo "        <div class=\"card-header\">\n";
-            echo "            Featured\n";  // card title
-            echo "        </div>\n";
-            echo "        <div class=\"card-body\">\n";
-            echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
-            echo "            <p class=\"card-text\">With supporting text below as a natural lead-in to additional content.</p>\n";
-
-            echo "        </div>\n";
-            echo "    </div>\n";
-            echo "</div>\n";
-
-            for ($i = 1; $i < $n_indicators; $i++) {
-              echo "<div class=\"".$class_."\">\n";
-              echo "    <div class=\"card\">\n";
-              echo "        <div class=\"card-header\">\n";
-              echo "            Featured\n";
-              echo "        </div>\n";
-              echo "        <div class=\"card-body\">\n";
-              echo "            <h5 class=\"card-title\">Special title treatment</h5>\n";
-              echo "            <p class=\"card-text\">With supporting text below as a natural lead-in to additional content.</p>\n";
-
-              echo "        </div>\n";
-              echo "    </div>\n";
-              echo "</div>\n";
-            }
-
-            */?>
-
-            <!--<div class="col-md-3 offset-md-1">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
-                    </div>
-                </div>
-            </div>-->
         </div>
         <div class="row mt-4">
           <div class="col-md-2 offset-md-1">
