@@ -68,6 +68,7 @@ function checkFormManual(indicators, messages) {
 }
 
 function readForm() {
+  var address = document.getElementById("address_manual").value;
   var params = document.getElementsByClassName("parameters");
   var param_name = [];
   var param_value = [];
@@ -95,7 +96,7 @@ function readForm() {
     if (ans != "true") {
       alert(ans);
     } else {
-      var json_params = {"method":method, "indicators":indicators, "messages":messages};
+      var json_params = {"method":method, "address":address, "indicators":indicators, "messages":messages};
       //alert("we->" + JSON.stringify(json_params));
       var my_params = "{";
       for (var i = 0; i < indicators.length; i++) {
@@ -113,7 +114,7 @@ function readForm() {
 }
 
 function checkCheckbox(ident) {
-  document.getElementById("btn_"+ident).click();
+  //document.getElementById("btn_"+ident).click();
   var el = document.getElementById("chk_" + ident);
   if (el.checked == false) {
     var radio = document.getElementById("mess_" + ident);
