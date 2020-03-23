@@ -116,7 +116,7 @@ $placeholders = ["Actual web address", "", "Age of the domain (e.g. 2 days)", ""
 									<div style="text-align: center;">
 
  									 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
- 								     <input class="mdl-textfield__input" name ="address" type="text" id="address">
+ 								     <input class="mdl-textfield__input" name ="address_manual" type="text" id="address_manual">
  								     <label class="mdl-textfield__label" for="sample1">Insert the phishing web address</label>
  								   </div>
  	 						 		</div>
