@@ -243,16 +243,16 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
 				<?php
 					if ($mtd == "manual") {
 						echo "		<div class=\"col-md-2 offset-md-5\">";
-						echo "				<button class=\"btn btn-danger float-right\">Back to safety</button>";
+						echo "				<button class=\"btn btn-primary with-border float-right\">Back to safety</button>";
 						echo "		</div>";
 						echo "</div>";
 
 					} else {
 						echo "		<div class=\"col-md-2 offset-md-3\">";
-						echo "				<button id=\"explain-more-button\" class=\"btn btn-danger float-right\">Explain more</button>";
+						echo "				<button id=\"explain-more-button\" class=\"btn btn-danger to-explain float-right\">Explain more</button>";
 						echo "		</div>";
 						echo "		<div class=\"col-md-2\">";
-						echo "				<button class=\"btn btn-danger float-right\">Back to safety</button>";
+						echo "				<button class=\"btn btn-primary float-right\">Back to safety</button>";
 						echo "		</div>";
 						echo "</div>";
 					}
@@ -345,6 +345,7 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
     		<br>
 
     </div>
+    </div>
 
 </body>
 
@@ -356,6 +357,16 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
     .white {
         color: white !important;
     }
+
+		.to-explain {
+				background-color:#c82333;
+				border-color: #FFFFFF;
+		}
+
+		.to-explain:hover {
+				background-color:#dc3545;
+				border-color: #FFFFFF;
+		}
 
     .underline {
         text-decoration: underline !important;
@@ -453,7 +464,7 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
         let explainMoreCards = document.getElementById("explain-more-cards");
         if(explainMoreCards.style.display == '' || explainMoreCards.style.display == 'none'){
             explainMoreCards.style.display = 'flex';
-						explainMoreButton.innerHTML = "Explain less";
+						explainMoreButton.innerHTML = "Hide";
         }
         else{
             explainMoreCards.style.display = 'none';
