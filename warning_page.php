@@ -348,10 +348,10 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
     </div>
 
 </body>
-
+<!-- old body background-color: #F74242-->
 <style>
     body {
-        background-color: #F74242;
+        background-color: #e80000;
     }
 
     .white {
@@ -359,12 +359,12 @@ if ($mtd == "latin square" && ($_SESSION["index"] == null || $_SESSION["index"] 
     }
 
 		.to-explain {
-				background-color:#c82333;
+				background-color:#e80000;
 				border-color: #FFFFFF;
 		}
 
 		.to-explain:hover {
-				background-color:#dc3545;
+				background-color:#cf000a;
 				border-color: #FFFFFF;
 		}
 
