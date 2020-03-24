@@ -68,15 +68,15 @@ function checkFormManual(indicators, messages) {
 }
 
 function readForm() {
-  var address = document.getElementById("address_manual").value;
-  var params = document.getElementsByClassName("parameters");
+  /*var params = document.getElementsByClassName("parameters");
   var param_name = [];
   var param_value = [];
   for (var i = 0; i < params.length; i++) {
     param_name.push(params[i].id);
     param_value.push(params[i].value);
     alert((i+1) + "->" + param_name[i]+":"+param_value[i]);
-  }
+  }*/
+  var address = document.getElementById("address_manual").value;
   var method = "manual";
   var checkedBoxesRadios = getCheckedBoxes("warn_form_manual");
   var indicators = [];
@@ -100,12 +100,18 @@ function readForm() {
       //alert("we->" + JSON.stringify(json_params));
       var my_params = "{";
       for (var i = 0; i < indicators.length; i++) {
-        var val = document.getElementById(indicators[i]+"_param_manual").value;
-        my_params += "\"" + indicators[i] + "_param\":\""+val+"\",";
+        var val = document.getElementById(indicators[i]+"_param_manual");
+        if (val != null) {
+          val = val.value;
+          my_params += "\"" + indicators[i] + "_param\":\""+val+"\",";
+        }
       }
       var l = my_params.length;
-      my_params = my_params.substring(0, l-1);
+      if (l > 1) {
+        my_params = my_params.substring(0, l-1);
+      }
       my_params += "}";
+
       my_params = JSON.parse(my_params);
       //alert("my->" + my_params);
       location.replace("/warning_page.php" + "?" + $.param(json_params) + "&" + $.param(my_params));
